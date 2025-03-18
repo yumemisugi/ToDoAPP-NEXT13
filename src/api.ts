@@ -2,7 +2,7 @@ import { Task } from "@/types";
 
 export const getAllTodos = async (): Promise<Task[]> => {
   const res = await fetch(`http://localhost:3001/tasks`, {
-    cache: "force-cache", //SSR
+    cache: "no-store", //SSR
   });
   const todos = res.json();
 
