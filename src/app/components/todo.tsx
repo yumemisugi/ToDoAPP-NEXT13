@@ -1,16 +1,24 @@
 "use client";
 
-import { editTodo } from "@/api";
+import { deleteTodo, editTodo } from "@/api";
 import { Task } from "@/types";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface TodoProps {
   todo: Task;
 }
 
 const Todo = ({ todo }: TodoProps) => {
+  const ref = useRef<HTMLInputElement>(null);
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedTaskTitle, setEditedTaskTitle] = useState(todo.text);
+
+  useEffect(() => {
+    if (isEditing) {
+      ref.current?.focus();
+    }
+  }, [isEditing]);
 
   const handleEdit = async () => {
     setIsEditing(true);
@@ -22,6 +30,10 @@ const Todo = ({ todo }: TodoProps) => {
     console.log(handleSave);
   };
 
+  const handleDelete = async () => {
+    await deleteTodo(todo.id);
+  };
+
   return (
     <li
       key={todo.id}
@@ -29,6 +41,7 @@ const Todo = ({ todo }: TodoProps) => {
     >
       {isEditing ? (
         <input
+          ref={ref}
           type="text"
           className="mr-2 py-1 px-2 rounded border-gray-400 border"
           value={editedTaskTitle}
@@ -50,7 +63,9 @@ const Todo = ({ todo }: TodoProps) => {
           </button>
         )}
 
-        <button className="text-red-500">Delate</button>
+        <button className="text-red-500" onClick={handleDelete}>
+          Delate
+        </button>
       </div>
     </li>
   );
